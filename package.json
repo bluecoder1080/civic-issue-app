@@ -1,0 +1,25 @@
+{
+  "name": "civic-issue-app",
+  "version": "1.0.0",
+  "description": "Civic Issue Reporter - Full Stack Application",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm install && cd backend && npm install && cd ../civic-issue-frontend && npm install",
+    "backend": "cd backend && npm start",
+    "frontend": "cd civic-issue-frontend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "start": "npm run dev"
+  },
+  "keywords": [
+    "civic",
+    "issues",
+    "react",
+    "node",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

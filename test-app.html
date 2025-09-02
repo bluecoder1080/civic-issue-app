@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civic Issue Reporter - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .error {
+            background: #f44336;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .camera-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        #video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        #canvas {
+            display: none;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏙️ Civic Issue Reporter</h1>
+        
+        <div class="status">
+            <h3>📡 Server Status</h3>
+            <div id="backend-status">Checking backend...</div>
+            <div id="frontend-status">Frontend: Ready</div>
+        </div>
+
+        <div class="camera-section">
+            <h3>📸 Camera Test</h3>
+            <button class="button" onclick="startCamera()">Start Camera</button>
+            <button class="button" onclick="capturePhoto()">Take Photo</button>
+            <button class="button" onclick="stopCamera()">Stop Camera</button>
+            <br><br>
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <img id="captured-photo" style="max-width: 400px; border-radius: 10px; display: none;">
+        </div>
+
+        <div class="camera-section">
+            <h3>📍 Location Test</h3>
+            <button class="button" onclick="getLocation()">Get My Location</button>
+            <div id="location-result"></div>
+        </div>
+
+        <div class="camera-section">
+            <h3>📝 Test Form</h3>
+            <form id="test-form">
+                <div class="form-group">
+                    <label for="title">Issue Title:</label>
+                    <input type="text" id="title" placeholder="e.g., Broken street light" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" rows="4" placeholder="Describe the issue..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" placeholder="Enter location or use GPS" required>
+                </div>
+                <button type="submit" class="button">Submit Test Issue</button>
+            </form>
+        </div>
+
+        <div class="status">
+            <h3>🔗 Quick Links</h3>
+            <a href="http://localhost:5173" class="button" target="_blank">Open Full App</a>
+            <a href="http://localhost:5000" class="button" target="_blank">Backend API</a>
+        </div>
+    </div>
+
+    <script>
+        let stream = null;
+        let capturedImage = null;
+
+        // Check server status
+        async function checkBackend() {
+            try {
+                const response = await fetch('http://localhost:5000');
+                document.getElementById('backend-status').innerHTML = 
+                    '<span style="color: #4CAF50;">✅ Backend: Running on http://localhost:5000</span>';
+            } catch (error) {
+                document.getElementById('backend-status').innerHTML = 
+                    '<span style="color: #f44336;">❌ Backend: Not running (Error: ' + error.message + ')</span>';
+            }
+        }
+
+        // Camera functions
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                document.getElementById('video').srcObject = stream;
+                showMessage('Camera started successfully!', 'success');
+            } catch (error) {
+                showMessage('Camera error: ' + error.message, 'error');
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const photo = document.getElementById('captured-photo');
+            
+            if (stream) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                
+                capturedImage = canvas.toDataURL('image/jpeg');
+                photo.src = capturedImage;
+                photo.style.display = 'block';
+                showMessage('Photo captured!', 'success');
+            } else {
+                showMessage('Please start camera first', 'error');
+            }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                document.getElementById('video').srcObject = null;
+                stream = null;
+                showMessage('Camera stopped', 'success');
+            }
+        }
+
+        // Location function
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        document.getElementById('location-result').innerHTML = 
+                            `<div class="success">📍 Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}</div>`;
+                        document.getElementById('location').value = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    },
+                    (error) => {
+                        showMessage('Location error: ' + error.message, 'error');
+                    }
+                );
+            } else {
+                showMessage('Geolocation not supported', 'error');
+            }
+        }
+
+        // Form submission
+        document.getElementById('test-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('location', document.getElementById('location').value);
+            
+            if (capturedImage) {
+                // Convert base64 to blob
+                const response = await fetch(capturedImage);
+                const blob = await response.blob();
+                formData.append('image', blob, 'photo.jpg');
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/issues', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    showMessage('Issue submitted successfully!', 'success');
+                    document.getElementById('test-form').reset();
+                } else {
+                    showMessage('Failed to submit issue', 'error');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        });
+
+        function showMessage(message, type) {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = message;
+            document.querySelector('.container').appendChild(div);
+            
+            setTimeout(() => {
+                div.remove();
+            }, 5000);
+        }
+
+        // Check backend status on load
+        checkBackend();
+    </script>
+</body>
+</html>
