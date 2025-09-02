@@ -4,6 +4,7 @@ import multer from "multer";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 dotenv.config();
@@ -18,8 +19,12 @@ app.use(cors());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve uploaded images
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Serve uploaded images (configurable upload directory)
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+app.use("/uploads", express.static(uploadDir));
 
 // ✅ MongoDB Connection (Updated)
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/civic-issues";
@@ -30,7 +35,7 @@ mongoose
 
 // Multer Setup for Image Upload
 const storage = multer.diskStorage({
-  destination: "uploads/",
+  destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) =>
     cb(null, Date.now() + path.extname(file.originalname)),
 });
