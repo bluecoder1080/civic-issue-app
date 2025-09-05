@@ -52,7 +52,7 @@ The app now uses a centralized configuration system:
 ```javascript
 // src/config.js
 const config = {
-  BACKEND_URL: import.meta.env.VITE_BACKEND_URL || "http://localhost:5000",
+  BACKEND_URL: import.meta.env.VITE_BACKEND_URL || "https://civic-eye-backend-296m.onrender.com",
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "/api",
   // ... other settings
 };
@@ -63,12 +63,12 @@ You can customize the backend URL by creating a `.env` file:
 
 ```bash
 # .env
-VITE_BACKEND_URL=http://localhost:5000
+VITE_BACKEND_URL=https://civic-eye-backend-296m.onrender.com
 VITE_API_BASE_URL=/api
 ```
 
 ### **Default Values**
-- **Development**: `http://localhost:5000` (your current backend)
+- **Development**: `https://civic-eye-backend-296m.onrender.com` (your deployed backend)
 - **Production**: Can be set via environment variables
 - **API**: `/api` (relative URL for Vite proxy)
 
@@ -79,7 +79,7 @@ VITE_API_BASE_URL=/api
 // Correct image URL construction
 src={`${config.BACKEND_URL}/${issue.image}`}
 
-// Example: http://localhost:5000/uploads/1234567890.jpg
+// Example: https://civic-eye-backend-296m.onrender.com/uploads/1234567890.jpg
 ```
 
 ### **Error Handling**
@@ -119,13 +119,13 @@ onError={(e) => {
 
 ### **Images Still Not Showing?**
 1. **Check backend URL** in `src/config.js`
-2. **Verify backend is running** on port 5000
+2. **Verify backend is running** at https://civic-eye-backend-296m.onrender.com
 3. **Check image path** in the database
 4. **Inspect browser console** for errors
 
 ### **Common Issues**
 - **CORS errors**: Backend needs to allow frontend domain
-- **Wrong port**: Ensure backend is on port 5000
+- **Wrong URL**: Ensure backend URL is https://civic-eye-backend-296m.onrender.com
 - **Image path**: Verify uploads folder structure
 
 ## ✨ **Future Enhancements**
