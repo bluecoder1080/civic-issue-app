@@ -96,17 +96,17 @@ export default function LandingPage() {
       {/* Enhanced Navigation */}
       <nav className="bg-white/95 backdrop-blur-xl shadow-2xl border-b-2 border-civic-blue/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
               <div 
-                className="p-3 bg-gradient-to-br from-civic-blue to-blue-700 rounded-xl cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl"
+                className="p-2 sm:p-3 bg-gradient-to-br from-civic-blue to-blue-700 rounded-xl cursor-pointer hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-110 shadow-xl hover:shadow-2xl"
                 onClick={() => navigate('/')}
               >
-                <Building2 className="w-7 h-7 text-white" />
+                <Building2 className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
               </div>
-              <div>
-                <h1 className="text-xl md:text-2xl font-black text-gray-900 text-shadow-lg">CivicEye</h1>
-                <p className="text-sm md:text-base text-gray-700 font-bold">Smart Community Solutions</p>
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-xl md:text-2xl font-black text-gray-900 text-shadow-lg truncate">CivicEye</h1>
+                <p className="text-xs sm:text-sm md:text-base text-gray-700 font-bold truncate">Smart Community Solutions</p>
               </div>
             </div>
             
@@ -130,27 +130,28 @@ export default function LandingPage() {
               </a>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
               <button
                 onClick={handleGetStarted}
-                className="bg-gradient-to-r from-civic-blue to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 md:px-8 py-3 rounded-xl font-bold text-sm md:text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl relative overflow-hidden group"
+                className="bg-gradient-to-r from-civic-blue to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-3 sm:px-6 md:px-8 py-2 sm:py-3 rounded-xl font-bold text-xs sm:text-sm md:text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl relative overflow-hidden group"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                <span className="relative z-10 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  Get Started
+                <span className="relative z-10 flex items-center gap-1 sm:gap-2">
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">Get Started</span>
+                  <span className="xs:hidden">Start</span>
                 </span>
               </button>
               
               {/* Mobile menu button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-3 rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-110"
+                className="md:hidden p-2 sm:p-3 rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-110"
               >
                 {mobileMenuOpen ? (
-                  <X className="w-6 h-6 text-gray-700" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                 ) : (
-                  <Menu className="w-6 h-6 text-gray-700" />
+                  <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                 )}
               </button>
             </div>
@@ -182,11 +183,11 @@ export default function LandingPage() {
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="animate-slide-up-fade">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium mb-8 border border-white/30">
-              <Sparkles className="w-4 h-4" />
-              <span>Trusted by 10,000+ Citizens</span>
-              <Star className="w-4 h-4 text-yellow-300" />
+            {/* Badge - Fixed mobile responsiveness */}
+            <div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-6 sm:mb-8 border border-white/30 max-w-xs sm:max-w-none mx-auto">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Trusted by 10,000+ Citizens</span>
+              <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-300 flex-shrink-0" />
             </div>
             
             <h1 className="heading-responsive font-black mb-6 leading-tight text-white text-shadow-lg">
@@ -226,17 +227,17 @@ export default function LandingPage() {
             
             {/* Stats Preview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20">
                 <div className="text-3xl font-bold text-civic-blue mb-2">{stats.reported.toLocaleString()}+</div>
-                <div className="text-gray-700 font-medium">Issues Reported</div>
+                <div className="text-gray-900 font-semibold">Issues Reported</div>
               </div>
-              <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20">
                 <div className="text-3xl font-bold text-green-600 mb-2">{stats.resolved.toLocaleString()}+</div>
-                <div className="text-gray-700 font-medium">Problems Solved</div>
+                <div className="text-gray-900 font-semibold">Problems Solved</div>
               </div>
-              <div className="glass-card p-6 rounded-2xl text-center">
+              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20">
                 <div className="text-3xl font-bold text-orange-600 mb-2">24/7</div>
-                <div className="text-gray-700 font-medium">Active Monitoring</div>
+                <div className="text-gray-900 font-semibold">Active Monitoring</div>
               </div>
             </div>
           </div>
@@ -319,7 +320,7 @@ export default function LandingPage() {
               <div className="text-3xl md:text-4xl font-bold text-civic-blue mb-2">
                 {stats.reported.toLocaleString()}
               </div>
-              <p className="text-sm md:text-base text-gray-600">Issues Reported</p>
+              <p className="text-xs sm:text-sm md:text-base text-gray-800 font-semibold">Issues Reported</p>
             </div>
             
             <div className="text-center p-6 md:p-8 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -329,7 +330,7 @@ export default function LandingPage() {
               <div className="text-3xl md:text-4xl font-bold text-civic-green mb-2">
                 {stats.resolved.toLocaleString()}
               </div>
-              <p className="text-sm md:text-base text-gray-600">Issues Resolved</p>
+              <p className="text-xs sm:text-sm md:text-base text-gray-800 font-semibold">Problems Solved</p>
             </div>
             
             <div className="text-center p-6 md:p-8 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -339,7 +340,7 @@ export default function LandingPage() {
               <div className="text-3xl md:text-4xl font-bold text-civic-orange mb-2">
                 {stats.pending.toLocaleString()}
               </div>
-              <p className="text-sm md:text-base text-gray-600">In Progress</p>
+              <p className="text-xs sm:text-sm md:text-base text-gray-800 font-semibold">Active Monitoring</p>
             </div>
           </div>
         </div>
@@ -543,7 +544,7 @@ export default function LandingPage() {
           
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-gray-400 text-sm md:text-base">
-              © 2024 Civic Issue Reporter. All rights reserved. 
+              © 2025 Civic Issue Reporter. All rights reserved. 
               A government service designed for community improvement.
             </p>
           </div>

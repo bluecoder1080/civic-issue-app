@@ -275,6 +275,16 @@ body {
   animation: text-glow 3s ease-in-out infinite;
 }
 
+/* Custom breakpoints and responsive utilities */
+@media (min-width: 475px) {
+  .xs\:inline {
+    display: inline;
+  }
+  .xs\:hidden {
+    display: none;
+  }
+}
+
 /* Enhanced responsive improvements */
 @media (max-width: 640px) {
   .container {

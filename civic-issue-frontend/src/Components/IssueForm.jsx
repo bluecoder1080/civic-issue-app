@@ -7,6 +7,8 @@ const IssueForm = ({ onIssueSubmitted }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -35,8 +37,16 @@ const IssueForm = ({ onIssueSubmitted }) => {
             finalTranscript += event.results[i][0].transcript;
           }
         }
-        if (finalTranscript) {
-          setDescription(prev => prev + ' ' + finalTranscript);
+        if (finalTranscript.trim()) {
+          setDescription(prev => {
+            const trimmedPrev = prev.trim();
+            const trimmedNew = finalTranscript.trim();
+            // Avoid duplicates by checking if the new text is already at the end
+            if (trimmedPrev.endsWith(trimmedNew)) {
+              return trimmedPrev;
+            }
+            return trimmedPrev + (trimmedPrev ? ' ' : '') + trimmedNew;
+          });
         }
       };
       
@@ -107,6 +117,71 @@ const IssueForm = ({ onIssueSubmitted }) => {
       setCameraStream(null);
     }
     setShowCamera(false);
+  };
+
+  // Location suggestions functionality
+  const fetchLocationSuggestions = async (query) => {
+    if (query.length < 3) {
+      setLocationSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=IN&addressdetails=1`,
+        {
+          headers: {
+            'User-Agent': 'CivicEye-App/1.0'
+          }
+        }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        const suggestions = data.map(item => ({
+          display_name: item.display_name,
+          lat: item.lat,
+          lon: item.lon,
+          formatted: formatLocationName(item)
+        }));
+        setLocationSuggestions(suggestions);
+        setShowSuggestions(true);
+      }
+    } catch (error) {
+      console.log('Location suggestions failed:', error);
+    }
+  };
+
+  const formatLocationName = (item) => {
+    const address = item.address || {};
+    const parts = [];
+    
+    if (address.building) parts.push(address.building);
+    if (address.house_number && address.road) {
+      parts.push(`${address.house_number} ${address.road}`);
+    } else if (address.road) {
+      parts.push(address.road);
+    }
+    if (address.suburb) parts.push(address.suburb);
+    if (address.city || address.town || address.village) {
+      parts.push(address.city || address.town || address.village);
+    }
+    if (address.state) parts.push(address.state);
+    
+    return parts.slice(0, 3).join(', ') || item.display_name.split(',').slice(0, 3).join(',').trim();
+  };
+
+  const handleLocationChange = (e) => {
+    const value = e.target.value;
+    setLocation(value);
+    fetchLocationSuggestions(value);
+  };
+
+  const selectSuggestion = (suggestion) => {
+    setLocation(suggestion.formatted);
+    setShowSuggestions(false);
+    setLocationSuggestions([]);
   };
 
   // Speech-to-text functionality
@@ -278,10 +353,37 @@ const IssueForm = ({ onIssueSubmitted }) => {
             <input
               type="text"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={handleLocationChange}
+              onFocus={() => location.length >= 3 && setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               placeholder="e.g., Building Name, Street Address, Area, City (GPS will auto-detect precise location)"
               className="w-full px-4 py-4 pl-12 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-300 bg-white hover:border-gray-300 text-gray-800 placeholder-gray-500 shadow-sm hover:shadow-md"
             />
+            {/* Location Suggestions Dropdown */}
+            {showSuggestions && locationSuggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                {locationSuggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => selectSuggestion(suggestion)}
+                    className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 focus:bg-civic-blue/10 focus:outline-none"
+                  >
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-4 h-4 text-civic-blue mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="font-medium text-gray-900 text-sm">
+                          {suggestion.formatted}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1 truncate">
+                          {suggestion.display_name}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
