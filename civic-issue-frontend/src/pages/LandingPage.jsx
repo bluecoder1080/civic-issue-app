@@ -172,7 +172,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Enhanced Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-20">
         {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-civic-blue via-blue-600 to-blue-800">
           <div className="absolute inset-0 bg-mesh animate-pulse-slow"></div>
@@ -184,7 +184,7 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="animate-slide-up-fade">
             {/* Badge - Fixed mobile responsiveness */}
-            <div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-6 sm:mb-8 border border-white/30 max-w-xs sm:max-w-none mx-auto">
+            <div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium mb-6 sm:mb-8 mt-8 sm:mt-4 border border-white/30 max-w-xs sm:max-w-none mx-auto">
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Trusted by 10,000+ Citizens</span>
               <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-300 flex-shrink-0" />
@@ -226,16 +226,16 @@ export default function LandingPage() {
             </div>
             
             {/* Stats Preview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-16 sm:mb-20">
+              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20 pointer-events-none">
                 <div className="text-3xl font-bold text-civic-blue mb-2">{stats.reported.toLocaleString()}+</div>
                 <div className="text-gray-900 font-semibold">Issues Reported</div>
               </div>
-              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20">
+              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20 pointer-events-none">
                 <div className="text-3xl font-bold text-green-600 mb-2">{stats.resolved.toLocaleString()}+</div>
                 <div className="text-gray-900 font-semibold">Problems Solved</div>
               </div>
-              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20">
+              <div className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl text-center shadow-lg border border-white/20 pointer-events-none">
                 <div className="text-3xl font-bold text-orange-600 mb-2">24/7</div>
                 <div className="text-gray-900 font-semibold">Active Monitoring</div>
               </div>
