@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Camera, Upload, X, MapPin, FileText, AlertCircle, CheckCircle, Sparkles, Zap } from "lucide-react";
+import { Camera, Upload, X, MapPin, FileText, AlertCircle, CheckCircle, Sparkles, Zap, Mic, MicOff } from "lucide-react";
 import api from "../api";
+import { getPreciseLocation } from "../utils/geocoding";
 
 const IssueForm = ({ onIssueSubmitted }) => {
   const [title, setTitle] = useState("");
@@ -12,21 +13,72 @@ const IssueForm = ({ onIssueSubmitted }) => {
   const [showCamera, setShowCamera] = useState(false);
   const [cameraStream, setCameraStream] = useState(null);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [isListening, setIsListening] = useState(false);
+  const [speechRecognition, setSpeechRecognition] = useState(null);
   
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Get user location
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      
+      recognition.onresult = (event) => {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
+        }
+        if (finalTranscript) {
+          setDescription(prev => prev + ' ' + finalTranscript);
+        }
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+      
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+      
+      setSpeechRecognition(recognition);
+    }
+  }, []);
+
+  // Get user location with reverse geocoding
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
-          // You can use a reverse geocoding service here to get address
-          setLocation(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+          
+          // Try precise location detection first
+          const readableLocation = await getPreciseLocation(latitude, longitude);
+          
+          if (readableLocation) {
+            setLocation(readableLocation);
+          } else {
+            // Fallback to coordinates only if geocoding completely fails
+            setLocation(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+          }
         },
         (error) => {
           console.log("Location access denied:", error);
+          setLocation("Location not available");
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 60000 // Cache for 1 minute for more frequent updates
         }
       );
     }
@@ -55,6 +107,22 @@ const IssueForm = ({ onIssueSubmitted }) => {
       setCameraStream(null);
     }
     setShowCamera(false);
+  };
+
+  // Speech-to-text functionality
+  const toggleSpeechRecognition = () => {
+    if (!speechRecognition) {
+      alert('Speech recognition is not supported in your browser.');
+      return;
+    }
+    
+    if (isListening) {
+      speechRecognition.stop();
+      setIsListening(false);
+    } else {
+      speechRecognition.start();
+      setIsListening(true);
+    }
   };
 
   const capturePhoto = () => {
@@ -147,41 +215,73 @@ const IssueForm = ({ onIssueSubmitted }) => {
 
         {/* Description Field */}
         <div className="group">
-          <label className="block text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-primary-500" />
-            Description *
-          </label>
-          <textarea
-            placeholder="Provide detailed description of the issue... Be specific about what you observed, when it happened, and how it affects the community."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            rows={5}
-            className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-300 bg-white hover:border-gray-300 text-gray-800 placeholder-gray-500 resize-none shadow-sm hover:shadow-md"
-          />
+          <div className="flex items-center justify-between mb-3">
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+              <FileText className="w-4 h-4 text-primary-500" />
+              Issue Description *
+            </label>
+            <button
+              type="button"
+              onClick={toggleSpeechRecognition}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
+                isListening 
+                  ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' 
+                  : 'bg-civic-blue hover:bg-blue-700 text-white'
+              }`}
+            >
+              {isListening ? (
+                <>
+                  <MicOff className="w-4 h-4" />
+                  <span className="text-sm">Stop</span>
+                </>
+              ) : (
+                <>
+                  <Mic className="w-4 h-4" />
+                  <span className="text-sm">Speak</span>
+                </>
+              )}
+            </button>
+          </div>
+          <div className="relative">
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe the issue in detail... (or click 'Speak' to use voice input)"
+              required
+              rows={4}
+              className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-civic-blue/20 transition-all duration-300 resize-none hover:border-gray-300 ${
+                isListening 
+                  ? 'border-red-400 bg-red-50 focus:border-red-500' 
+                  : 'border-gray-200 focus:border-civic-blue'
+              }`}
+            />
+            {isListening && (
+              <div className="absolute top-2 right-2 flex items-center gap-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                Listening...
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Location Field */}
         <div className="group">
-          <label className="block text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-primary-500" />
-            Location *
-          </label>
+          <div className="flex items-center justify-between mb-3">
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+              <MapPin className="w-4 h-4 text-primary-500" />
+              Location *
+            </label>
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Auto-detected</span>
+          </div>
           <div className="relative">
             <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-primary-500 transition-colors" />
             <input
               type="text"
-              placeholder="Street address, landmark, or GPS coordinates"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              required
+              placeholder="e.g., Building Name, Street Address, Area, City (GPS will auto-detect precise location)"
               className="w-full px-4 py-4 pl-12 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-300 bg-white hover:border-gray-300 text-gray-800 placeholder-gray-500 shadow-sm hover:shadow-md"
             />
-            {location && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-              </div>
-            )}
           </div>
         </div>
 

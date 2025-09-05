@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { MapPin, Calendar, Image, RefreshCw, AlertTriangle, Eye, Bug, TestTube, Clock, CheckCircle2, AlertCircle, Sparkles, TrendingUp } from "lucide-react";
 import api from "../api";
 import config from "../config";
+import { convertLocationToReadable, isCoordinateString } from "../utils/geocoding";
 
 const IssueList = () => {
   const [issues, setIssues] = useState([]);
@@ -10,6 +11,7 @@ const IssueList = () => {
   const [showDebug, setShowDebug] = useState(false);
   const [testImageStatus, setTestImageStatus] = useState('idle');
   const [imageLoadStates, setImageLoadStates] = useState({});
+  const [processedLocations, setProcessedLocations] = useState({});
 
   const fetchIssues = async () => {
     try {
@@ -27,6 +29,23 @@ const IssueList = () => {
         }
       });
       setImageLoadStates(initialStates);
+      
+      // Process coordinate-based locations to readable addresses
+      const locationPromises = res.data.map(async (issue) => {
+        if (issue.location && isCoordinateString(issue.location)) {
+          const readableLocation = await convertLocationToReadable(issue.location);
+          return { id: issue._id, location: readableLocation };
+        }
+        return { id: issue._id, location: issue.location };
+      });
+      
+      Promise.all(locationPromises).then(results => {
+        const locationMap = {};
+        results.forEach(result => {
+          locationMap[result.id] = result.location;
+        });
+        setProcessedLocations(locationMap);
+      });
     } catch (err) {
       console.error("Error fetching issues:", err);
       setError("Failed to load issues. Please try again.");
@@ -413,7 +432,9 @@ const IssueList = () => {
                         </div>
                         <div>
                           <p className="font-medium text-gray-800">Location</p>
-                          <p className="text-gray-600 truncate max-w-48">{issue.location}</p>
+                          <p className="text-gray-600 truncate max-w-48">
+                            {processedLocations[issue._id] || issue.location || "Location not available"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-gray-600">

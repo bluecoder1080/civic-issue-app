@@ -383,57 +383,70 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Community Testimonials Section */}
-      <section id="testimonials" className="py-20 md:py-32 bg-gradient-to-br from-civic-blue to-blue-800 relative overflow-hidden">
-        <div className="absolute inset-0 bg-pattern-grid opacity-20"></div>
+      {/* Enhanced Community Testimonials Section */}
+      <section id="testimonials" className="py-20 md:py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-pattern-grid opacity-30"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur-sm">
-              <Heart className="w-4 h-4" />
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-2 bg-white/30 text-white px-6 py-3 rounded-full text-base font-black mb-8 backdrop-blur-sm border border-white/40 shadow-2xl">
+              <Heart className="w-5 h-5 text-red-300" />
               <span>Loved by Communities</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
+            <h2 className="text-5xl md:text-7xl font-black text-white mb-8 text-shadow-lg">
               Real Stories, Real Impact
             </h2>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+            <p className="text-2xl md:text-3xl text-blue-200 max-w-4xl mx-auto font-bold leading-relaxed">
               See how CivicEye is transforming communities across the region
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-20">
             {[
               {
                 name: "Priya Sharma",
                 role: "Community Leader",
+                location: "Ranchi, Jharkhand",
                 text: "CivicEye helped us get 15 streetlights fixed in our area within just 2 weeks. The transparency is amazing!",
-                avatar: "👩‍💼"
+                avatar: "👩‍💼",
+                impact: "15 Issues Resolved"
               },
               {
                 name: "Rajesh Kumar",
                 role: "Local Resident",
+                location: "Dhanbad, Jharkhand",
                 text: "I reported a pothole that was causing accidents. It was fixed in 3 days! This platform really works.",
-                avatar: "👨‍🔧"
+                avatar: "👨‍🔧",
+                impact: "3 Day Resolution"
               },
               {
                 name: "Anita Verma",
                 role: "School Teacher",
+                location: "Jamshedpur, Jharkhand",
                 text: "Our school playground drainage issue was resolved quickly. My students can play safely again!",
-                avatar: "👩‍🏫"
+                avatar: "👩‍🏫",
+                impact: "School Safety Improved"
               }
             ].map((testimonial, index) => (
-              <div key={index} className="glass-card p-8 rounded-2xl animate-slide-up-fade" style={{animationDelay: `${index * 200}ms`}}>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="text-3xl">{testimonial.avatar}</div>
+              <div key={index} className="bg-white/95 backdrop-blur-xl p-10 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-105 animate-slide-up-fade border-2 border-white/30 hover:border-civic-blue/50" style={{animationDelay: `${index * 200}ms`}}>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="text-4xl bg-gradient-to-br from-civic-blue/20 to-blue-200 p-3 rounded-2xl">{testimonial.avatar}</div>
                   <div>
-                    <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                    <h4 className="text-xl font-black text-gray-900">{testimonial.name}</h4>
+                    <p className="text-civic-blue font-bold text-base">{testimonial.role}</p>
+                    <p className="text-gray-600 font-semibold text-sm">{testimonial.location}</p>
                   </div>
                 </div>
-                <p className="text-gray-700 italic leading-relaxed">"{testimonial.text}"</p>
-                <div className="flex text-yellow-400 mt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
+                <p className="text-gray-800 font-medium leading-relaxed text-lg mb-6 italic">"{testimonial.text}"</p>
+                <div className="flex justify-between items-center">
+                  <div className="flex text-yellow-500 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-current" />
+                    ))}
+                  </div>
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold">
+                    {testimonial.impact}
+                  </div>
                 </div>
               </div>
             ))}
