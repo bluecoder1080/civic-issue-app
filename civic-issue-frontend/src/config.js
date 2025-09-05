@@ -1,7 +1,7 @@
 // Configuration file for environment variables
 const config = {
   // Backend URL for API calls and image display
-  BACKEND_URL: import.meta.env.VITE_BACKEND_URL || "http://localhost:5000",
+  BACKEND_URL: import.meta.env.VITE_BACKEND_URL || (import.meta.env.PROD ? "" : "http://localhost:5000"),
   
   // API base URL
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "/api",

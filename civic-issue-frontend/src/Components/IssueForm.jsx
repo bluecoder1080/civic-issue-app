@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Camera, Upload, X, MapPin, FileText, AlertCircle, CheckCircle } from "lucide-react";
+import { Camera, Upload, X, MapPin, FileText, AlertCircle, CheckCircle, Sparkles, Zap } from "lucide-react";
 import api from "../api";
 
 const IssueForm = ({ onIssueSubmitted }) => {
@@ -125,76 +125,86 @@ const IssueForm = ({ onIssueSubmitted }) => {
 
   return (
     <div className="animate-fade-in">
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {/* Title Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+        <div className="group">
+          <label className="block text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary-500" />
             Issue Title *
           </label>
           <div className="relative">
-            <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <FileText className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-primary-500 transition-colors" />
             <input
               type="text"
               placeholder="e.g., Broken street light, Pothole, Garbage not collected"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white"
+              className="w-full px-4 py-4 pl-12 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-300 bg-white hover:border-gray-300 text-gray-800 placeholder-gray-500 shadow-sm hover:shadow-md"
             />
           </div>
         </div>
 
         {/* Description Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+        <div className="group">
+          <label className="block text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <FileText className="w-4 h-4 text-primary-500" />
             Description *
           </label>
           <textarea
-            placeholder="Provide detailed description of the issue..."
+            placeholder="Provide detailed description of the issue... Be specific about what you observed, when it happened, and how it affects the community."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
-            rows={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white resize-none"
+            rows={5}
+            className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-300 bg-white hover:border-gray-300 text-gray-800 placeholder-gray-500 resize-none shadow-sm hover:shadow-md"
           />
         </div>
 
         {/* Location Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+        <div className="group">
+          <label className="block text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary-500" />
             Location *
           </label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-primary-500 transition-colors" />
             <input
               type="text"
-              placeholder="Street address or coordinates"
+              placeholder="Street address, landmark, or GPS coordinates"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               required
-              className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 bg-white"
+              className="w-full px-4 py-4 pl-12 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-300 bg-white hover:border-gray-300 text-gray-800 placeholder-gray-500 shadow-sm hover:shadow-md"
             />
+            {location && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              </div>
+            )}
           </div>
         </div>
 
         {/* Image Upload Section */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+        <div className="group">
+          <label className="block text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <Camera className="w-4 h-4 text-primary-500" />
             Photo Evidence
+            <span className="text-xs font-normal text-gray-500">(Optional but recommended)</span>
           </label>
           
           {!capturedImage ? (
-            <div className="space-y-3">
-              <div className="flex gap-3">
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={startCamera}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg transition-all duration-200"
+                  className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-xl transition-all duration-300 border-2 border-primary-200 hover:border-primary-300 transform hover:scale-105 shadow-sm hover:shadow-md"
                 >
                   <Camera className="w-5 h-5" />
                   Take Photo
                 </button>
-                <label className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg transition-all duration-200 cursor-pointer">
+                <label className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-gray-300 cursor-pointer transform hover:scale-105 shadow-sm hover:shadow-md">
                   <Upload className="w-5 h-5" />
                   Upload Photo
                   <input
@@ -205,61 +215,79 @@ const IssueForm = ({ onIssueSubmitted }) => {
                   />
                 </label>
               </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-500">Photos help authorities understand and prioritize issues faster</p>
+              </div>
             </div>
           ) : (
-            <div className="relative">
+            <div className="relative group">
               <img
                 src={capturedImage}
                 alt="Captured"
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-full h-56 object-cover rounded-xl shadow-lg"
               />
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-xl"></div>
               <button
                 type="button"
                 onClick={removeImage}
-                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200 shadow-lg transform hover:scale-110"
               >
                 <X className="w-4 h-4" />
               </button>
+              <div className="absolute bottom-3 left-3 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                Photo attached
+              </div>
             </div>
           )}
         </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Submitting...
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-2">
-              <CheckCircle className="w-5 h-5" />
-              Submit Issue
-            </div>
-          )}
-        </button>
+        <div className="pt-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+            {loading ? (
+              <div className="flex items-center justify-center gap-3 relative z-10">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-lg">Submitting Issue...</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-3 relative z-10">
+                <Zap className="w-5 h-5" />
+                <span className="text-lg">Submit Issue Report</span>
+              </div>
+            )}
+          </button>
+        </div>
       </form>
 
       {/* Success/Error Message */}
       {message && (
-        <div className={`mt-6 p-4 rounded-lg ${
+        <div className={`mt-8 p-6 rounded-xl border-2 animate-slide-up ${
           message.includes('✅') 
-            ? 'bg-green-50 text-green-800 border border-green-200' 
-            : 'bg-red-50 text-red-800 border border-red-200'
-        }`}>
-          {message}
+            ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-800 border-green-200 shadow-green-100' 
+            : 'bg-gradient-to-r from-red-50 to-rose-50 text-red-800 border-red-200 shadow-red-100'
+        } shadow-lg`}>
+          <div className="flex items-center gap-3">
+            {message.includes('✅') ? (
+              <CheckCircle className="w-6 h-6 text-green-600" />
+            ) : (
+              <AlertCircle className="w-6 h-6 text-red-600" />
+            )}
+            <span className="font-semibold text-lg">{message}</span>
+          </div>
         </div>
       )}
 
       {/* Camera Modal */}
       {showCamera && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <div className="relative w-full h-64 bg-black rounded-lg overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl animate-bounce-in">
+            <div className="relative w-full h-72 bg-black rounded-xl overflow-hidden shadow-inner">
               <video
                 ref={videoRef}
                 autoPlay
@@ -267,21 +295,24 @@ const IssueForm = ({ onIssueSubmitted }) => {
                 className="w-full h-full object-cover"
               />
               <canvas ref={canvasRef} className="hidden" />
+              <div className="absolute inset-0 border-2 border-white/30 rounded-xl pointer-events-none"></div>
             </div>
             
-            <div className="flex gap-3 mt-4">
+            <div className="flex gap-4 mt-6">
               <button
                 type="button"
                 onClick={capturePhoto}
-                className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200"
+                className="flex-1 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
               >
-                📸 Capture
+                <Camera className="w-5 h-5" />
+                Capture Photo
               </button>
               <button
                 type="button"
                 onClick={stopCamera}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-all duration-200"
+                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
               >
+                <X className="w-5 h-5" />
                 Cancel
               </button>
             </div>

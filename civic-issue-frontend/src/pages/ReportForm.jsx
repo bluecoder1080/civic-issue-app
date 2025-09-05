@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "../api"; // your axios instance or import 'axios' directly
+import axios from "../api"; // unified axios instance
 
 export default function ReportForm() {
   const [title, setTitle] = useState("");
@@ -37,7 +37,7 @@ export default function ReportForm() {
 
     try {
       setSubmitting(true);
-      const res = await axios.post("http://localhost:5000/api/issues", formData, {
+      const res = await axios.post("/issues", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert(res.data.message);

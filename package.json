@@ -8,7 +8,9 @@
     "backend": "cd backend && npm start",
     "frontend": "cd civic-issue-frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "build": "cd civic-issue-frontend && npm install && npm run build",
+    "vercel-build": "npm run build"
   },
   "keywords": [
     "civic",
@@ -21,5 +23,10 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "framer": "^2.4.1",
+    "framer-motion": "^12.23.12",
+    "motion": "^12.23.12"
   }
 }
