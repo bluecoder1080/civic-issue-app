@@ -341,12 +341,12 @@ const IssueForm = ({ onIssueSubmitted }) => {
 
         {/* Location Field */}
         <div className="group">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
             <label className="flex items-center gap-2 text-sm font-semibold text-gray-800">
               <MapPin className="w-4 h-4 text-primary-500" />
               Location *
             </label>
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Auto-detected</span>
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full self-start sm:self-center">Auto-detected</span>
           </div>
           <div className="relative">
             <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-primary-500 transition-colors" />
@@ -356,7 +356,7 @@ const IssueForm = ({ onIssueSubmitted }) => {
               onChange={handleLocationChange}
               onFocus={() => location.length >= 3 && setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-              placeholder="e.g., Building Name, Street Address, Area, City (GPS will auto-detect precise location)"
+              placeholder="e.g., Building Name, Street Address, Area, City"
               className="w-full px-4 py-4 pl-12 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-300 bg-white hover:border-gray-300 text-gray-800 placeholder-gray-500 shadow-sm hover:shadow-md"
             />
             {/* Location Suggestions Dropdown */}
@@ -389,26 +389,30 @@ const IssueForm = ({ onIssueSubmitted }) => {
 
         {/* Image Upload Section */}
         <div className="group">
-          <label className="block text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-            <Camera className="w-4 h-4 text-primary-500" />
-            Photo Evidence
-            <span className="text-xs font-normal text-gray-500">(Optional but recommended)</span>
+          <label className="block text-sm font-semibold text-gray-800 mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-primary-500" />
+                Photo Evidence
+              </div>
+              <span className="text-xs font-normal text-gray-500">(Optional but recommended)</span>
+            </div>
           </label>
           
           {!capturedImage ? (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={startCamera}
-                  className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-xl transition-all duration-300 border-2 border-primary-200 hover:border-primary-300 transform hover:scale-105 shadow-sm hover:shadow-md"
+                  className="flex items-center justify-center gap-3 px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-xl transition-all duration-300 border-2 border-primary-200 hover:border-primary-300 transform hover:scale-105 shadow-sm hover:shadow-md min-h-[60px] w-full"
                 >
-                  <Camera className="w-5 h-5" />
-                  Take Photo
+                  <Camera className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">Take Photo</span>
                 </button>
-                <label className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-gray-300 cursor-pointer transform hover:scale-105 shadow-sm hover:shadow-md">
-                  <Upload className="w-5 h-5" />
-                  Upload Photo
+                <label className="flex items-center justify-center gap-3 px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-gray-300 cursor-pointer transform hover:scale-105 shadow-sm hover:shadow-md min-h-[60px] w-full">
+                  <Upload className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-sm sm:text-base">Upload Photo</span>
                   <input
                     type="file"
                     onChange={handleFileUpload}
@@ -417,7 +421,7 @@ const IssueForm = ({ onIssueSubmitted }) => {
                   />
                 </label>
               </div>
-              <div className="text-center">
+              <div className="text-center px-2">
                 <p className="text-xs text-gray-500">Photos help authorities understand and prioritize issues faster</p>
               </div>
             </div>

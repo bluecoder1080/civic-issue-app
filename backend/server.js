@@ -6,8 +6,8 @@ import dotenv from "dotenv";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import { Issue } from "./models/Issue.js"; // ✅ Import Issue schema
-import twitterService from "./services/twitterService.js"; // ✅ Import Twitter service
+import { Issue } from "./models/Issue.js";
+import { uploadImageToCloudinary, testCloudinaryConnection } from "./services/cloudinaryService.js";
 
 dotenv.config();
 const app = express();
@@ -47,35 +47,36 @@ const upload = multer({ storage });
 // 📌 Submit New Issue
 app.post("/api/issues", upload.single("image"), async (req, res) => {
   try {
+    let imageUrl = null;
+    let localImagePath = null;
+
+    // If image is uploaded, save it to Cloudinary
+    if (req.file) {
+      localImagePath = req.file.path;
+      const cloudinaryResult = await uploadImageToCloudinary(localImagePath);
+      
+      if (cloudinaryResult.success) {
+        imageUrl = cloudinaryResult.url;
+        console.log("✅ Image uploaded to Cloudinary:", imageUrl);
+      } else {
+        console.error("❌ Cloudinary upload failed:", cloudinaryResult.message);
+        // Continue without image if Cloudinary fails
+      }
+    }
+
     const newIssue = new Issue({
       title: req.body.title,
       description: req.body.description,
       location: req.body.location,
-      image: req.file ? `/uploads/${req.file.filename}` : null,
+      image: imageUrl, // Store Cloudinary URL instead of local path
       issue_resolved: false,
     });
 
     await newIssue.save();
-    
-    // 🐦 Automatically post to Twitter with Jharkhand authority tags
-    try {
-      const imagePath = req.file ? path.join(uploadDir, req.file.filename) : null;
-      const twitterResult = await twitterService.postIssueToTwitter(newIssue, imagePath);
-      
-      if (twitterResult.success) {
-        console.log("✅ Issue posted to Twitter successfully!");
-        console.log("🔗 Tweet URL:", twitterResult.tweetUrl);
-      } else {
-        console.log("⚠️ Twitter posting failed:", twitterResult.message);
-      }
-    } catch (twitterError) {
-      console.error("❌ Twitter automation error:", twitterError);
-      // Don't fail the entire request if Twitter posting fails
-    }
 
     res.json({ 
       success: true, 
-      message: "✅ Issue submitted successfully and posted to Twitter!" 
+      message: "✅ Issue submitted successfully with image saved to Cloudinary!" 
     });
   } catch (error) {
     console.error("❌ Error submitting issue:", error);
@@ -134,27 +135,27 @@ app.get("/api/issues/unresolved", async (req, res) => {
   }
 });
 
-// 📌 Test Twitter Connection
-app.get("/api/twitter/test", async (req, res) => {
+// 📌 Test Cloudinary Connection
+app.get("/api/cloudinary/test", async (req, res) => {
   try {
-    const result = await twitterService.testConnection();
+    const result = await testCloudinaryConnection();
     if (result.success) {
       res.json({ 
         success: true, 
-        message: "✅ Twitter connection successful!", 
-        username: result.username 
+        message: "✅ Cloudinary connection successful!", 
+        result: result.result 
       });
     } else {
       res.status(500).json({ 
         success: false, 
-        message: "❌ Twitter connection failed", 
+        message: "❌ Cloudinary connection failed", 
         error: result.error 
       });
     }
   } catch (error) {
     res.status(500).json({ 
       success: false, 
-      message: "❌ Twitter test failed", 
+      message: "❌ Cloudinary test failed", 
       error: error.message 
     });
   }
