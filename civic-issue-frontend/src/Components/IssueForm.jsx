@@ -98,13 +98,22 @@ const IssueForm = ({ onIssueSubmitted }) => {
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' } // Use back camera on mobile
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
       });
       setCameraStream(stream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
       setShowCamera(true);
+      
+      // Wait for modal to render before setting video source
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().catch(err => console.log('Video play failed:', err));
+        }
+      }, 100);
     } catch (error) {
       console.error("Error accessing camera:", error);
       alert("Unable to access camera. Please check permissions.");
@@ -115,6 +124,9 @@ const IssueForm = ({ onIssueSubmitted }) => {
     if (cameraStream) {
       cameraStream.getTracks().forEach(track => track.stop());
       setCameraStream(null);
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
     }
     setShowCamera(false);
   };
@@ -206,17 +218,28 @@ const IssueForm = ({ onIssueSubmitted }) => {
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
       
+      // Check if video is ready
+      if (video.videoWidth === 0 || video.videoHeight === 0) {
+        alert('Camera is not ready yet. Please wait a moment and try again.');
+        return;
+      }
+      
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0);
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
       
       canvas.toBlob((blob) => {
-        const file = new File([blob], 'camera-photo.jpg', { type: 'image/jpeg' });
-        setImage(file);
-        setCapturedImage(URL.createObjectURL(blob));
-      }, 'image/jpeg');
-      
-      stopCamera();
+        if (blob) {
+          const file = new File([blob], 'camera-photo.jpg', { type: 'image/jpeg' });
+          setImage(file);
+          setCapturedImage(URL.createObjectURL(blob));
+          stopCamera();
+        } else {
+          alert('Failed to capture photo. Please try again.');
+        }
+      }, 'image/jpeg', 0.9);
+    } else {
+      alert('Camera not available. Please try again.');
     }
   };
 
@@ -498,7 +521,13 @@ const IssueForm = ({ onIssueSubmitted }) => {
                 ref={videoRef}
                 autoPlay
                 playsInline
+                muted
                 className="w-full h-full object-cover"
+                onLoadedMetadata={() => {
+                  if (videoRef.current) {
+                    videoRef.current.play().catch(err => console.log('Auto-play failed:', err));
+                  }
+                }}
               />
               <canvas ref={canvasRef} className="hidden" />
               <div className="absolute inset-0 border-2 border-white/30 rounded-xl pointer-events-none"></div>
