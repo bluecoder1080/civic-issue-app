@@ -1,0 +1,42 @@
+services:
+  # Frontend (React App)
+  - type: web
+    name: civic-issue-frontend
+    env: static
+    buildCommand: cd civic-issue-frontend && npm install && npm run build
+    staticPublishPath: ./civic-issue-frontend/dist
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://civic-eye-backend-296m.onrender.com
+      - key: VITE_API_BASE_URL
+        value: /api
+      - key: NODE_ENV
+        value: production
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Backend (Node.js API) - Already deployed at civic-eye-backend-296m.onrender.com
+  - type: web
+    name: civic-eye-backend
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: civic-eye-backend
+          property: port
+      # Add your environment variables here:
+      # - key: MONGO_URI
+      #   value: your_mongodb_connection_string
+      # - key: CLOUDINARY_CLOUD_NAME
+      #   value: your_cloudinary_cloud_name
+      # - key: CLOUDINARY_API_KEY
+      #   value: your_cloudinary_api_key
+      # - key: CLOUDINARY_API_SECRET
+      #   value: your_cloudinary_api_secret

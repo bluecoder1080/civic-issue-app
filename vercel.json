@@ -23,8 +23,12 @@
       "dest": "/backend/server.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/civic-issue-frontend/dist/(.*)",
       "dest": "/civic-issue-frontend/dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/civic-issue-frontend/dist/index.html"
     }
   ],
   "env": {
