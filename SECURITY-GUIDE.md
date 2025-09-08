@@ -14,12 +14,10 @@
    # MongoDB Connection
    MONGO_URI=mongodb+srv://your-username:your-password@cluster.mongodb.net/civic-issues
 
-   # Twitter API (for issue posting automation)
-   TWITTER_API_KEY=your_actual_twitter_api_key
-   TWITTER_API_SECRET=your_actual_twitter_api_secret
-   TWITTER_ACCESS_TOKEN=your_actual_access_token
-   TWITTER_ACCESS_TOKEN_SECRET=your_actual_access_token_secret
-   TWITTER_BEARER_TOKEN=your_actual_bearer_token
+   # Cloudinary (for image storage)
+   CLOUDINARY_CLOUD_NAME=your_actual_cloudinary_cloud_name
+   CLOUDINARY_API_KEY=your_actual_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_actual_cloudinary_api_secret
 
    # Optional: Enhanced Geocoding Services
    OPENCAGE_API_KEY=your_opencage_api_key

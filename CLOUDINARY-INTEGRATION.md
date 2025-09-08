@@ -8,7 +8,7 @@ The Civic Issue App now uses Cloudinary for cloud-based image storage instead of
 - ✅ Image optimization (auto quality, format conversion, size limits)
 - ✅ Secure URL generation for stored images
 - ✅ Automatic cleanup of temporary local files
-- ✅ Twitter integration updated to work with Cloudinary URLs
+- ✅ Clean integration with civic issue submission system
 - ✅ Connection testing endpoint for Cloudinary
 
 ## Configuration
@@ -31,7 +31,7 @@ CLOUDINARY_API_SECRET=-wDeofUeTpxqpRn7J6tfuFP1YIw
    - Auto format conversion (WebP when supported)
 4. Cloudinary URL stored in database
 5. Temporary local file deleted
-6. Issue posted to Twitter with Cloudinary image
+6. Issue saved to database with Cloudinary image URL
 
 ### New Endpoints
 - `GET /api/cloudinary/test` - Test Cloudinary connection
@@ -49,7 +49,6 @@ backend/
 │   └── cloudinary.js          # Cloudinary configuration
 ├── services/
 │   ├── cloudinaryService.js   # Cloudinary upload/delete functions
-│   └── twitterService.js      # Updated to handle Cloudinary URLs
 └── server.js                  # Updated image upload endpoint
 ```
 
@@ -71,7 +70,7 @@ To test the integration:
 ## Error Handling
 - If Cloudinary upload fails, the issue is still saved without an image
 - Temporary files are always cleaned up, even on upload failure
-- Twitter posting continues to work with fallback to text-only if image fails
+- System continues to work gracefully even if image upload fails
 
 ## Security Notes
 - API credentials are stored in environment variables

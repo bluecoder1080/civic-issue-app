@@ -60,13 +60,11 @@ MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/civic-issues
 NODE_ENV=production
 ```
 
-**Twitter Integration (Optional):**
+**Cloudinary Configuration (for image storage):**
 ```
-TWITTER_API_KEY=your_twitter_api_key
-TWITTER_API_SECRET=your_twitter_api_secret
-TWITTER_ACCESS_TOKEN=your_twitter_access_token
-TWITTER_ACCESS_TOKEN_SECRET=your_twitter_access_token_secret
-TWITTER_BEARER_TOKEN=your_twitter_bearer_token
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
 ### 3.3 Deploy
@@ -74,25 +72,12 @@ TWITTER_BEARER_TOKEN=your_twitter_bearer_token
 2. Wait for the build to complete
 3. Your app will be available at `https://your-app-name.vercel.app`
 
-## Step 4: Update Twitter Configuration (If Using Twitter Integration)
-
-Based on the memory from previous setup, update your Twitter app settings with your new Vercel URL:
-
-1. Go to https://developer.twitter.com/en/portal/dashboard
-2. Select your app
-3. Go to "App Settings" > "App Info"
-4. Update the following URLs:
-   - **Website URL**: `https://your-app-name.vercel.app`
-   - **Callback URI**: `https://your-app-name.vercel.app/callback`
-   - **Terms of service**: `https://your-app-name.vercel.app/terms`
-   - **Privacy policy**: `https://your-app-name.vercel.app/privacy`
-
-## Step 5: Test Your Deployment
+## Step 4: Test Your Deployment
 
 1. Visit your Vercel URL
 2. Test issue submission
 3. Check if images upload correctly
-4. Verify Twitter integration (if enabled)
+4. Verify Cloudinary integration
 
 ## Troubleshooting
 
@@ -112,10 +97,10 @@ Based on the memory from previous setup, update your Twitter app settings with y
 - Vercel has file system limitations
 - Consider using cloud storage (AWS S3, Cloudinary) for production
 
-**Twitter Integration Issues:**
-- Ensure all Twitter credentials are set
-- Verify callback URLs match your Vercel domain
-- Check Twitter app permissions (Read and Write)
+**Cloudinary Integration Issues:**
+- Ensure all Cloudinary credentials are set correctly
+- Verify image upload functionality
+- Check Cloudinary dashboard for uploaded images
 
 ## Production Considerations
 
